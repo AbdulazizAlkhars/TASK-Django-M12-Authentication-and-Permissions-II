@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, get_user_model
 from .forms import Register
 from movies import forms, models
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 
 def get_movies(request: HttpRequest) -> HttpResponse:
@@ -61,5 +61,11 @@ def register_user(request):
 
     context = {
         "form": form,
+        "user": request.user,
     }
     return render(request, "register.html", context)
+
+
+def logout_user(request):
+    logout(request)
+    return redirect("home")
