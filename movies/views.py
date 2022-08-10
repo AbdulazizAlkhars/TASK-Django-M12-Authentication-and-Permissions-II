@@ -2,7 +2,7 @@ from django.db import OperationalError
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, get_user_model
-from .forms import Register
+from .forms import Register, LoginForm
 from movies import forms, models
 from django.contrib.auth import authenticate, login, logout
 
@@ -69,3 +69,21 @@ def register_user(request):
 def logout_user(request):
     logout(request)
     return redirect("home")
+
+
+def login_user(request):
+    form = LoginForm()
+    if request.method == "POST":
+        form = Register(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            authenticated_user = authenticate(
+                request, username=username, password=password)
+            login(request, authenticated_user)
+
+        return redirect("home")
+    context = {
+        "form": form,
+    }
+    return render(request, "login.html", context)
